@@ -7,7 +7,6 @@ namespace SmallClinic.Application.Services
     public class ServiceService(IUnitOfWork unitOfWork) : IService<Service>
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-
         public void Add(Service entity)
         {
             if (entity == null)
@@ -99,6 +98,11 @@ namespace SmallClinic.Application.Services
         public int Count()
         {
             return _unitOfWork.Services.Count();
+        }
+
+        public IEnumerable<Service> GetAllWithoutPaging()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,61 +1,67 @@
 ﻿using SmallClinic.Application.Doctors;
-using SmallClinic.Application.Invoices;
-using SmallClinic.Application.Patients;
+using SmallClinic.Application.Interfaces;
 using SmallClinic.Domain.Entities;
 using SmallClinic.Domain.Interfaces;
 using System.Linq.Expressions;
 
 namespace SmallClinic.Application.Admissions
 {
-    public class AdmissionService(IUnitOfWork unitOfWork, IService<Doctor> doctorService, IService<Patient> patientService, IService<Invoice> invoiceService) : IService<Admission>
+    public class AdmissionService : IService<Admission>
     {
-        private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
-        private readonly IService<Doctor> _doctorService = doctorService ?? throw new ArgumentNullException(nameof(doctorService));
-        private readonly IService<Patient> _patientService = patientService ?? throw new ArgumentNullException(nameof(patientService));
-        private readonly IService<Invoice> _invoiceService = invoiceService ?? throw new ArgumentNullException(nameof(invoiceService));
+        private readonly IUnitOfWork _unitOfWork;
+
+        public AdmissionService(
+                    IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        }
         public void Add(Admission entity)
         {
-
             if (entity == null)
-                throw new ArgumentNullException(nameof(entity), "Admission can't be null!");
+                throw new ArgumentNullException(nameof(entity), "Admission entity can't be null");
 
-            if (!_patientService.IsExisted(p => p.Code == entity.Patient.Code))
-            {
-                _patientService.Add(entity.Patient);
-            }
-            if (!_doctorService.IsExisted(d=> d.Code == entity.Doctor.Code))
-                _doctorService.Add(entity.Doctor);
-
-
-            if (IsExisted(s => s.Code == entity.Code))
-                throw new InvalidOperationException($"Admission with code {entity.Code} already exists!");
-
+          
+            entity.Code = GenerateAdmissionCode();
             _unitOfWork.Admissions.Add(entity);
-            _unitOfWork.SaveChanges();
+            _unitOfWork.SaveChanges();  
 
-            // Tạo Invoice
-            var invoice = new Invoice(
-                date: DateTime.Now,
-                amount: CalculateInvoiceAmount(entity),
-                discount: null,
-                netAmount: CalculateNetAmount(entity),
-                patientId: entity.PatientId,
-                invoiceStatusId: Guid.NewGuid(),
-                prommoteId: null,
-                admissionId: entity.Id
-            );
-            _unitOfWork.SaveChanges();
+        }
+        string GenerateAdmissionCode()
+        {
+            var lastAdmission = _unitOfWork.Admissions.GetAllWithoutPaging().OrderByDescending(a => a.Code).FirstOrDefault();
+            if (lastAdmission == null)
+            {
+                return "ADM001";
+            }
+            var lastCode = lastAdmission.Code.Substring(3);
+            var nextCode = int.Parse(lastCode) + 1;
+
+            return $"ADM{nextCode:D3}";
+        }
+        string GenerateInvoiceCode()
+        {
+            var lastAdmission = _unitOfWork.Invoices.GetAllWithoutPaging().OrderByDescending(a => a.Code).FirstOrDefault();
+            if (lastAdmission == null)
+            {
+                return "INV001";
+            }
+            var lastCode = lastAdmission.Code.Substring(3);
+            var nextCode = int.Parse(lastCode) + 1;
+
+            return $"INV{nextCode:D3}";
         }
         private decimal CalculateInvoiceAmount(Admission admission)
         {
             return admission.AdmissionLines.Sum(line => line.Amount);
         }
+
         private decimal CalculateNetAmount(Admission admission)
         {
             var amount = CalculateInvoiceAmount(admission);
             var discount = 0m;
             return amount - discount;
         }
+
         public IEnumerable<Admission> Find(Expression<Func<Admission, bool>> predicate)
         {
             return _unitOfWork.Admissions.Find(predicate);
@@ -65,6 +71,7 @@ namespace SmallClinic.Application.Admissions
         {
             return _unitOfWork.Admissions.IsExisted(predicate);
         }
+
         public IEnumerable<Admission> GetAll(int pageNumber, int pageSize)
         {
             if (pageNumber < 1)
@@ -95,6 +102,7 @@ namespace SmallClinic.Application.Admissions
             _unitOfWork.Admissions.Update(entity);
             _unitOfWork.SaveChanges();
         }
+
         public void Remove(Guid id)
         {
             if (!IsExisted(s => s.Id == id))
@@ -126,10 +134,15 @@ namespace SmallClinic.Application.Admissions
             _unitOfWork.Admissions.Restore(id);
             _unitOfWork.SaveChanges();
         }
+
         public int Count()
         {
             return _unitOfWork.Admissions.Count();
         }
 
+        public IEnumerable<Admission> GetAllWithoutPaging()
+        {
+            return _unitOfWork.Admissions.GetAllWithoutPaging();
+        }
     }
 }

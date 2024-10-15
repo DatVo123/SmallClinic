@@ -2,9 +2,9 @@
 {
     public class DoctorDTO
     {
-        public string Code { get; private set; }
-        public string Name { get; private set; } 
-        public Guid GenderId { get; private set; } 
-        public Guid SpecialityId { get; private set; }
+        public string Code { get; set; }
+        public string Name { get; set; } 
+        public Guid GenderId { get; set; } 
+        public Guid SpecialityId { get; set; }
     }
 }

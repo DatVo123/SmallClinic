@@ -1,10 +1,11 @@
-﻿using SmallClinic.Domain.Entities;
+﻿using SmallClinic.Application.Interfaces;
+using SmallClinic.Domain.Entities;
 using SmallClinic.Domain.Interfaces;
 using System.Linq.Expressions;
 
 namespace SmallClinic.Application.Patients
 {
-    public class PatientService(IUnitOfWork unitOfWork) : IService<Patient>
+    public class PatientService(IUnitOfWork unitOfWork) : IPatientService
     {
         private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
@@ -16,9 +17,31 @@ namespace SmallClinic.Application.Patients
             if (IsExisted(s => s.Code == entity.Code))
                 throw new InvalidOperationException($"Patient with code {entity.Code} already exists!");
 
-            _unitOfWork.Patients.Add(entity);
-        }
+            var patient = GetById(entity.Id);
+            if (patient == null)
+            {
+                entity.Code = GeneratePatientCode();
+                _unitOfWork.Patients.Add(entity);
+                _unitOfWork.SaveChanges();
+            }
 
+        }
+        public string GeneratePatientCode()
+        {
+            var lastPatient = _unitOfWork.Patients.GetAllWithoutPaging()
+                .OrderByDescending(p => p.Code)
+                .FirstOrDefault();
+
+            if (lastPatient == null)
+            {
+                return "PAT001";
+            }
+
+            var lastCode = lastPatient.Code.Substring(3);
+            var nextCode = int.Parse(lastCode) + 1;
+
+            return $"PAT{nextCode:D3}";
+        }
         public IEnumerable<Patient> Find(Expression<Func<Patient, bool>> predicate)
         {
             return _unitOfWork.Patients.Find(predicate);
@@ -41,7 +64,7 @@ namespace SmallClinic.Application.Patients
 
         public Patient GetById(Guid id)
         {
-            return _unitOfWork.Patients.GetById(id) ?? throw new KeyNotFoundException($"Patient with id {id} is not found!");
+            return _unitOfWork.Patients.GetById(id);
         }
 
         public void Update(Patient entity)
@@ -94,5 +117,9 @@ namespace SmallClinic.Application.Patients
             return _unitOfWork.Patients.Count();
         }
 
+        public IEnumerable<Patient> GetAllWithoutPaging()
+        {
+            return _unitOfWork.Patients.GetAllWithoutPaging();
+        }
     }
 }

@@ -95,5 +95,9 @@ namespace SmallClinic.Application.Promotes
             return _unitOfWork.Promotes.Count();
         }
 
+        public IEnumerable<Promote> GetAllWithoutPaging()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

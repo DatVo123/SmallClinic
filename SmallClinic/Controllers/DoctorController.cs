@@ -7,7 +7,7 @@ using SmallClinic.Domain.Interfaces;
 
 namespace SmallClinic.API.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class DoctorController(IService<Doctor> doctorService, IMapper mapper) : ControllerBase
@@ -32,6 +32,22 @@ namespace SmallClinic.API.Controllers
                 TotalPages = totalPages
             };
             return Ok(response);
+        }
+        [HttpPost("Create")]
+        public IActionResult Create([FromBody] DoctorDTO doctorDTO)
+        {
+            if (doctorDTO == null)
+                return BadRequest("Doctor can't be null!");
+            try
+            {
+                var doctor = _mapper.Map<Doctor>(doctorDTO);
+                _doctorService.Add(doctor);
+                return CreatedAtAction(nameof(Get), new { id = doctor.Id });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("Get")]
         public IActionResult Get(Guid id)

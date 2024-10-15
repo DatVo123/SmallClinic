@@ -22,6 +22,10 @@ namespace SmallClinic.Infrastructure.Repositories
         {
             return _dbSet.Skip((pageNumber - 1) * pageSize).Take(pageSize).Where(e=>e.IsDeleted==false).ToList();
         }
+        public IEnumerable<T> GetAllWithoutPaging()
+        {
+            return _dbSet.Where(e => e.IsDeleted == false).ToList();
+        }
 
         public T GetById(Guid id)
         {

@@ -94,5 +94,9 @@ namespace SmallClinic.Application.Invoices
             return _unitOfWork.Invoices.Count();
         }
 
+        public IEnumerable<Invoice> GetAllWithoutPaging()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

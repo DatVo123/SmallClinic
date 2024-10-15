@@ -109,5 +109,10 @@ namespace SmallClinic.Application.Services
         {
             return _unitOfWork.AdmissionLines.Count();
         }
+
+        public IEnumerable<AdmissionLine> GetAllWithoutPaging()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

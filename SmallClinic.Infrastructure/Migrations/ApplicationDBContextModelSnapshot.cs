@@ -58,7 +58,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasIndex("PatientId");
 
-                    b.ToTable("Admissions");
+                    b.ToTable("Admissions", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.AdmissionLine", b =>
@@ -102,7 +102,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("AdmissionLines");
+                    b.ToTable("AdmissionLines", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.AdmissionStatus", b =>
@@ -127,7 +127,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AdmissionStatus");
+                    b.ToTable("AdmissionStatus", (string)null);
 
                     b.HasData(
                         new
@@ -188,7 +188,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasIndex("SpecialityId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.Invoice", b =>
@@ -241,7 +241,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasIndex("PrommoteId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.InvoiceLine", b =>
@@ -285,7 +285,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("InvoicesLine");
+                    b.ToTable("InvoicesLine", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.InvoiceStatus", b =>
@@ -310,7 +310,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InvoicesStatus");
+                    b.ToTable("InvoicesStatus", (string)null);
 
                     b.HasData(
                         new
@@ -369,7 +369,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasIndex("GenderId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.Promote", b =>
@@ -406,7 +406,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Promote");
+                    b.ToTable("Promote", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.Service", b =>
@@ -437,7 +437,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.Speciality", b =>
@@ -462,7 +462,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specialities");
+                    b.ToTable("Specialities", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.Entities.User", b =>
@@ -487,7 +487,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("SmallClinic.Domain.ValueObjects.Gender", b =>
@@ -512,7 +512,7 @@ namespace SmallClinic.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genders");
+                    b.ToTable("Genders", (string)null);
 
                     b.HasData(
                         new

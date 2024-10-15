@@ -2,9 +2,9 @@
 
 namespace SmallClinic.Domain.Entities
 {
-    public class Invoice(DateTime date, decimal amount, decimal? discount, decimal netAmount, Guid patientId, Guid invoiceStatusId, Guid? prommoteId, Guid admissionId) : EntityBase, IHasCode
+    public class Invoice(string code, DateTime date, decimal amount, decimal? discount, decimal netAmount, Guid patientId, Guid invoiceStatusId, Guid? prommoteId, Guid admissionId) : EntityBase, IHasCode
     {
-        public string Code { get; private set; }
+        public string Code { get; set; }
         public DateTime Date { get; private set; } = date;
         public decimal Amount { get; private set; } = amount;
         public decimal? Discount { get; private set; } = discount;

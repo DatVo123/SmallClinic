@@ -85,5 +85,10 @@ namespace smallclinic.application.services
         {
             return _unitOfWork.Specialities.Count();
         }
+
+        public IEnumerable<Speciality> GetAllWithoutPaging()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

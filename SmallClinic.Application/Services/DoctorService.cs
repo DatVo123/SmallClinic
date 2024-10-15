@@ -17,6 +17,7 @@ namespace SmallClinic.Application.Doctors
                 throw new InvalidOperationException($"Doctor with code {entity.Code} already exists!");
 
             _unitOfWork.Doctors.Add(entity);
+            _unitOfWork.SaveChanges();
         }
 
         public IEnumerable<Doctor> Find(Expression<Func<Doctor, bool>> predicate)
@@ -94,5 +95,9 @@ namespace SmallClinic.Application.Doctors
             return _unitOfWork.Doctors.Count();
         }
 
+        public IEnumerable<Doctor> GetAllWithoutPaging()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
