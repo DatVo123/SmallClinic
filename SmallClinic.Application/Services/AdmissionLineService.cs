@@ -22,10 +22,13 @@ namespace SmallClinic.Application.Services
             if (IsExisted(a => a.AdmissionId == entity.AdmissionId && a.ServiceId == entity.ServiceId))
                 throw new InvalidOperationException("This service is already added to the admission.");
 
-            if (entity.Discount < 0)
-                throw new InvalidOperationException("Discount is invalid!");
-            if (entity.Quantity <=0)
+            var service = _unitOfWork.Services.GetById(entity.ServiceId);
+
+            if (entity.Quantity <= 0)
                 throw new InvalidOperationException("Quantity is invalid!");
+            
+            entity.Amount = entity.CalculateAmount(service.Price, entity.Discount, entity.Quantity);
+            
 
             _unitOfWork.AdmissionLines.Add(entity);
             _unitOfWork.SaveChanges();

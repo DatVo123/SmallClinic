@@ -7,7 +7,7 @@ using SmallClinic.Domain.Interfaces;
 
 namespace SmallClinic.API.Controllers
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class AdmissionLineController : ControllerBase
@@ -22,22 +22,11 @@ namespace SmallClinic.API.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll(int pageNumber = 1, int pageSize = 5)
+        public IActionResult GetAll()
         {
-            var admissionLines = _admissionLine.GetAll(pageNumber, pageSize);
+            var admissionLines = _admissionLine.GetAllWithoutPaging();
             var admissionLineDtos = _mapper.Map<IEnumerable<AdmissionLineDTO>>(admissionLines);
-            var totalRecords = _admissionLine.Count();
-            var totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
-
-            var response = new
-            {
-                Data = admissionLineDtos,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalRecords = totalRecords,
-                TotalPages = totalPages
-            };
-            return Ok(response);
+            return Ok(admissionLineDtos);
         }
 
         [HttpGet("Get")]
